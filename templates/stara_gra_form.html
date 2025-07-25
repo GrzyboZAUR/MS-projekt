@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Nowa gra{% endblock %}
+
+{% block content %}
+
+    <h2>🎮 Stara gra – filtry</h2>
+    <form method="POST" action="/stara_gra">
+        <label>Typ gry:</label>
+        <select name="typ">
+            <option value="">Dowolny</option>
+            <option value="rywalizacja">Rywalizacja</option>
+            <option value="kooperacja">Kooperacja</option>
+            <option value="towarzyska">Towarzyska</option>
+            <option value="dla dzieci">Dla dzieci</option>
+        </select>
+        <br><br>
+
+        <label>Trudność:</label>
+        <select name="trudnosc">
+            <option value="">Dowolna</option>
+            <option value="łatwa">Łatwa</option>
+            <option value="średnia">Średnia</option>
+            <option value="trudna">Trudna</option>
+        </select>
+        <br><br>
+
+        <label>Liczba graczy:</label>
+        <input type="number" name="graczy" placeholder="n/d">
+        <br><br>
+
+        <label>Minimalna ocena (0–100):</label>
+        <input type="number" name="ocena_min" min="0" max="100" value="0">
+        <br><br>
+
+        <label>Właściciel:</label>
+        <select name="wlasciciel">
+            <option value="ALL">Wszyscy</option>
+            <option value="Grzyb">Grzyb</option>
+            <option value="Mazur">Mazur</option>
+            <option value="Rafal">Rafał</option>
+            <option value="Krzyś">Krzyś</option>
+        </select>
+        <br><br>
+
+        <label>Ile gier losować:</label>
+        <select name="limit">
+            <option value="1">1</option>
+            <option value="3" selected>3</option>
+            <option value="ALL">Wszystkie</option>
+        </select>
+        <br><br>
+
+        <button type="submit">🔍 Szukaj</button>
+        </form>
+    <br><a href="/">🔙 Powrót do menu</a>
+{% endblock %}

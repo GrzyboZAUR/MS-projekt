@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Menu główne{% endblock %}
+
+{% block content %}
+    <h2>🎯 Proponowane gry:</h2>
+    {% if wyniki %}
+        <ul>
+        {% for row in wyniki %}
+            <li>
+                <strong>{{ row.nazwa }}</strong> – {{ row.typ }}, {{ row.trudnosc }},
+                graczy {{ row.min_graczy }}–{{ row.max_graczy }},
+                właściciel: {{ row.imie }}, ocena: {{ row.ocena }}
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>❌ Brak pasujących gier.</p>
+    {% endif %}
+    <br>
+    <a href="/">🔙 Powrót do menu</a> |
+    <a href="/{{ powrot_form }}">🔁 Powtórz</a>
+{% endblock %}

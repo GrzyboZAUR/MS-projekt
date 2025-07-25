@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Nowa gra{% endblock %}
+
+{% block content %}
+
+    <h2>🔎 Szukaj gry po nazwie</h2>
+    <form method="POST" action="/szukaj">
+        <label>Fragment nazwy gry:</label>
+        <input type="text" name="nazwa" required>
+        <br><br>
+        <button type="submit">Szukaj</button>
+    </form>
+
+    <br><a href="/">🔙 Powrót do menu</a>
+{% endblock %}

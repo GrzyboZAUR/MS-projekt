@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Zagraj solo</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+        }
+        a {
+            color: lightblue;
+        }
+    </style>
+</head>
+<body>
+<h2>🧘‍♂️ Gry dostępne solo (od 1 gracza)</h2>
+
+{% if wyniki %}
+<ul>
+    {% for row in wyniki %}
+    <li>
+        <strong>{{ row.nazwa }}</strong> – {{ row.typ }}, {{ row.trudnosc }},
+        graczy {{ row.min_graczy }}–{{ row.max_graczy }},
+        właściciel: {{ row.imie }}, ocena: {{ row.ocena }}
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>❌ Brak gier dostępnych solo.</p>
+{% endif %}
+
+<br><a href="/">🔙 Powrót do menu</a>
+</body>
+</html>

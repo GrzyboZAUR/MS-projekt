@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Menu główne{% endblock %}
+
+{% block content %}
+<h2>🎰 Losowanie gry – wybierz właściciela i ilość gier</h2>
+
+<form method="POST" action="/losuj_gre">
+    <label>Właściciel gry:</label><br>
+    <select name="owner">
+        <option value="ALL">Wszyscy</option>
+        <option value="Grzyb">Grzyb</option>
+        <option value="Mazur">Mazur</option>
+        <option value="Rafal">Rafał</option>
+        <option value="Krzyś">Krzyś</option>
+    </select><br><br>
+
+    <label>Ile gier wylosować?</label><br>
+    <select name="limit">
+        <option value="1">1</option>
+        <option value="3" selected>3</option>
+        <option value="5">5</option>
+    </select><br><br>
+
+    <button type="submit">🎲 Losuj!</button>
+</form>
+<br><a href="/">🔙 Powrót</a>
+
+{% endblock %}
