@@ -6,11 +6,11 @@ app = Flask(__name__)
 # Połączenie z bazą danych
 def get_db_connection():
     return mysql.connector.connect(
-        host="mysql.railway.internal",
+        host="turntable.proxy.rlwy.net",
         user="root",
         password="ZHmAcCvURKGMTwAVCKuhkQBCwLOGiCvl",
         database="railway",
-        port=3306
+        port=40714
     )
 
 # --- Strona główna (menu trybów) ---
