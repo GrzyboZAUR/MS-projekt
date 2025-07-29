@@ -6,10 +6,11 @@ app = Flask(__name__)
 # Połączenie z bazą danych
 def get_db_connection():
     return mysql.connector.connect(
-        host="mysql32.mydevil.net",
-        user="m11674_vegas",
-        password="9C13IF64eNptTaa1,oXy}gRE[ysU5r",
-        database="m11674_vegas"
+        host="mysql.railway.internal",
+        user="root",
+        password="ZHmAcCvURKGMTwAVCKuhkQBCwLOGiCvl",
+        database="railway",
+        port=3306
     )
 
 # --- Strona główna (menu trybów) ---
