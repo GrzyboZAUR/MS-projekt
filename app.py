@@ -26,16 +26,19 @@ def nowa_gra_form():
     return render_template('nowa_gra_form.html')
 
 # --- Formularz: Nowa gra ---
-@app.route('/nowa_gra', methods=['POST'])
+app.route('/nowa_gra', methods=['POST'])
+
+
 def nowa_gra():
     try:
         owner = request.form['owner']
-
         limit = request.form.get('limit', '3')
 
+        params = []
         where_clause = "oc.ocena = 0"
         if owner != "ALL":
-            where_clause += f" AND o.imie = '{owner}'"
+            where_clause += " AND o.imie = %s"
+            params.append(owner)
 
         sql = f"""
             SELECT g.nazwa, g.typ, g.trudnosc, g.min_graczy, g.max_graczy, o.imie, oc.ocena
@@ -47,11 +50,12 @@ def nowa_gra():
         """
 
         if limit != "ALL":
-            sql += f"\nLIMIT {int(limit)}"
+            sql += "\nLIMIT %s"
+            params.append(int(limit))
 
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
-        cursor.execute(sql)
+        cursor.execute(sql, params)
         wyniki = cursor.fetchall()
         cursor.close()
         conn.close()
@@ -68,6 +72,7 @@ def nowa_gra():
 def stara_gra_form():
     return render_template('stara_gra_form.html')
 
+
 # --- Obsługa: Stara gra ---
 @app.route('/stara_gra', methods=['POST'])
 def stara_gra():
@@ -76,23 +81,28 @@ def stara_gra():
     graczy = request.form.get('graczy')
     ocena_min = request.form.get('ocena_min') or 0
     wlasciciel = request.form.get('wlasciciel')
+    limit = request.form.get('limit', '3')
 
-    where_clauses = [f"oc.ocena >= {int(ocena_min)}"]
+    params = []
+    where_clauses = ["oc.ocena >= %s"]
+    params.append(int(ocena_min))
 
     if typ:
-        where_clauses.append(f"g.typ = '{typ}'")
+        where_clauses.append("g.typ = %s")
+        params.append(typ)
     if trudnosc:
-        where_clauses.append(f"g.trudnosc = '{trudnosc}'")
+        where_clauses.append("g.trudnosc = %s")
+        params.append(trudnosc)
     if graczy:
         try:
             g = int(graczy)
-            where_clauses.append(f"{g} BETWEEN g.min_graczy AND g.max_graczy")
+            where_clauses.append("%s BETWEEN g.min_graczy AND g.max_graczy")
+            params.append(g)
         except ValueError:
-            pass  # ignoruj jeśli wpisano coś nie  pasującego
+            pass  # ignoruj jeśli wpisano coś nie pasującego
     if wlasciciel != "ALL":
-        where_clauses.append(f"o.imie = '{wlasciciel}'")
-
-    limit = request.form.get('limit', '3')
+        where_clauses.append("o.imie = %s")
+        params.append(wlasciciel)
 
     where_clause = " AND ".join(where_clauses)
 
@@ -105,11 +115,12 @@ def stara_gra():
         ORDER BY RAND()
     """
     if limit != "ALL":
-        sql += f"\nLIMIT {int(limit)}"
+        sql += "\nLIMIT %s"
+        params.append(int(limit))
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute(sql)
+    cursor.execute(sql, params)
     wyniki = cursor.fetchall()
     cursor.close()
     conn.close()
@@ -121,6 +132,7 @@ def stara_gra():
 @app.route('/szukaj_form')
 def szukaj_form():
     return render_template('szukaj.html')
+
 
 # --- Obsługa: Szukaj gry po nazwie ---
 @app.route('/szukaj', methods=['POST'])
@@ -145,10 +157,12 @@ def szukaj():
 
     return render_template('wyniki.html', wyniki=wyniki, powrot_form='szukaj_form')
 
+
 # --- Formularz: gra solo ---
 @app.route('/zagraj_solo_form')
 def zagraj_solo_form():
     return render_template('zagraj_solo_form.html')
+
 
 # --- Obsługa: gra solo ---
 @app.route('/zagraj_solo', methods=['POST'])
@@ -156,9 +170,11 @@ def zagraj_solo():
     owner = request.form['owner']
     limit = int(request.form['limit'])
 
+    params = []
     where_clause = "g.min_graczy = 1"
     if owner != "ALL":
-        where_clause += f" AND o.imie = '{owner}'"
+        where_clause += " AND o.imie = %s"
+        params.append(owner)
 
     sql = f"""
         SELECT g.nazwa, g.typ, g.trudnosc, g.min_graczy, g.max_graczy, o.imie, oc.ocena
@@ -167,22 +183,25 @@ def zagraj_solo():
         JOIN osoby o ON oc.id_osoby = o.id_osoby
         WHERE {where_clause}
         ORDER BY RAND()
-        LIMIT {limit};
+        LIMIT %s;
     """
+    params.append(limit)
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute(sql)
+    cursor.execute(sql, params)
     wyniki = cursor.fetchall()
     cursor.close()
     conn.close()
 
     return render_template('wyniki.html', wyniki=wyniki, powrot_form='zagraj_solo_form')
 
+
 # Formularz losowania gry
 @app.route('/losuj_gre_form')
 def losuj_gre_form():
     return render_template('losuj_gre_form.html')
+
 
 # Obsługa losowania
 @app.route('/losuj_gre', methods=['POST'])
@@ -190,9 +209,11 @@ def losuj_gre():
     owner = request.form['owner']
     limit = int(request.form['limit'])
 
+    params = []
     where_clause = "1=1"
     if owner != "ALL":
-        where_clause += f" AND o.imie = '{owner}'"
+        where_clause += " AND o.imie = %s"
+        params.append(owner)
 
     sql = f"""
         SELECT g.nazwa, g.typ, g.trudnosc, g.min_graczy, g.max_graczy, o.imie, oc.ocena
@@ -201,14 +222,19 @@ def losuj_gre():
         JOIN osoby o ON oc.id_osoby = o.id_osoby
         WHERE {where_clause}
         ORDER BY RAND()
-        LIMIT {limit};
+        LIMIT %s;
     """
+    params.append(limit)
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute(sql)
+    cursor.execute(sql, params)
     wyniki = cursor.fetchall()
     cursor.close()
     conn.close()
 
     return render_template('wyniki.html', wyniki=wyniki, powrot_form='losuj_gre_form')
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
